@@ -1,0 +1,39 @@
+let fs = require('fs');
+//строка считывается из input.txt, который находится в папке с кодом
+inputStr = fs.readFileSync('input.txt');
+inputStr = inputStr.toString();
+console.log('Входная строка: ', inputStr);
+let t = 'ananas'
+console.log('Искомая подстрока: ', t);
+let len = t.length;
+let alph = new Array();
+for (let i = 0; i < len; i++){
+	alph[t.charAt(i)] = 0
+}
+let del = new Array(len+1);
+for (let j = 0; j <= len; j++){
+	del[j] = new Array()
+}
+
+for(let i in alph)
+	del[0][i]=0
+
+for (j = 0; j < len; j++){
+	let prev = del[j][t.charAt(j)]
+	del[j][t.charAt(j)]=j+1
+	for (i in alph)
+		del[j+1][i]=del[prev][i]
+}
+console.log('Конечный детерминированный автомат: ', del)
+let indexes = new Array()
+j = 0 //текущее состояние автомата
+for (i =0; i < inputStr.length; i++){
+	let sym = inputStr[i]
+	for (let s in alph){
+		if (sym == s)
+			j = del[j][sym]
+	}
+	if (j == len)
+		indexes.push(i - len + 1)
+}
+console.log('Индексы вхождений: ',indexes)
